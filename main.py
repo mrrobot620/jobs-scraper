@@ -7,6 +7,7 @@ from html2docx import html2docx
 from htmldocx import HtmlToDocx
 from docx import Document
 from rich import print
+from rich.panel import Panel
 
 class Scraper:
     def __init__(self):
@@ -22,6 +23,8 @@ class Scraper:
         print(f'[bold yellow]INFO:[/] Total Jobs Posting: {len(self.job_urls)}')
         tasks = [self.job_post_scraper(entry['url'], entry['category']) for entry in self.job_urls]
         await asyncio.gather(*tasks)
+        print(Panel("[bold green]✅ Script Completed Successfully!! ✅[/]", expand=False))
+
 
     async def create_folders(self, urls):
         for url in urls:
@@ -111,6 +114,8 @@ class Scraper:
         except Exception as e:
             print(f"[bold red]ERROR:[/] Fallback parser also failed for: [red]{file_name}[/] with Exception: [red]{e}[/]")
 
-scp = Scraper()
-asyncio.run(scp.start_scraping())
+
+if __name__ == '__main__':
+    scp = Scraper()
+    asyncio.run(scp.start_scraping())
 
