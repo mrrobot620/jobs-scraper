@@ -68,13 +68,23 @@ class Scraper:
                 else:
                     print(f'[bold red]ERROR:[/] Failed to fetch Jobs for Category: {category}')
 
+    async def check_and_add(self , url: dict):
+        countries: list[str] = ['indian' , 'india' , 'uae' , 'emirates' , "bahrain" , 'kuwait'
+                                , "oman" , 'qatar' , "saudi arabia" , 'arabia' , 'united arb emirates']
+        for word in countries:
+            if word.lower() in url['url'].lower():
+                print(f'[bold yellow]INFO:[/] skipping job post as its from country: {word.lower()} | url: {url["url"]}')
+                return
+        print(f"[bold green]SUCCESS:[/] Adding Job to Main Instance | {url}")
+        self.job_urls.append(url)
+        
+
     async def parse_jobs_urls(self, html_content, category):
         soup = BeautifulSoup(html_content, 'lxml')
         for div in soup.find_all('div', class_="more"):
             url = div.find('a')['href']
             entry = {"category": category, "url": url}
-            print(f"[bold green]SUCCESS:[/] Adding Job to Main Instance | {entry}")
-            self.job_urls.append(entry)
+            await self.check_and_add(entry)
 
     async def job_post_scraper(self, url, category):
         job_name = url.split("/")[-2]
@@ -118,4 +128,3 @@ class Scraper:
 if __name__ == '__main__':
     scp = Scraper()
     asyncio.run(scp.start_scraping())
-
