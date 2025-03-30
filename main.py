@@ -19,7 +19,6 @@ class Scraper:
         await self.create_folders(urls)
         tasks = [self.scrape_jobs(url) for url in urls]
         await asyncio.gather(*tasks)
-        await self.csv_writer(self.job_urls)
         print(f'[bold yellow]INFO:[/] Total Jobs Posting: {len(self.job_urls)}')
         tasks = [self.job_post_scraper(entry['url'], entry['category']) for entry in self.job_urls]
         await asyncio.gather(*tasks)
